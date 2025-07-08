@@ -35,7 +35,7 @@ RUN npm install --only=production
 COPY --from=builder /app/dist ./dist
 
 # Make port 3000 available to the world outside this container
-EXPOSE 3000
+EXPOSE 8080
 
 # Define the command to run your app using CMD which defines your runtime
 CMD [ "npm", "run", "serve" ]

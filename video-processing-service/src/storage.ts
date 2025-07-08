@@ -8,8 +8,8 @@ const storage = new Storage();
 const rawVideoBucketName = "fc-yt-raw-videos";
 const processedVideoBucketName = "fc-yt-processed-videos";
 
-const localRawVideoPath = "./raw-videos";
-const localProcessedVideoPath = "./processed-videos";
+const localRawVideoPath = "/tmp/raw-videos";
+const localProcessedVideoPath = "/tmp/processed-videos";
 
 /**
  * Creates the local directories for raw and processed videos.

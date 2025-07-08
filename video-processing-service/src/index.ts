@@ -14,9 +14,12 @@ setupDirectories();
 
 const app = express();
 app.use(express.json());
+app.get('/', (req, res) => {
+  res.status(200).send('OK');
+});
 
 // Process a video file from Cloud Storage into 360p
-app.post('/process-video', async (req, res) => {
+app.post("/process-video", async (req, res) => {
 
   // Get the bucket and filename from the Cloud Pub/Sub message
   let data;

@@ -4,7 +4,6 @@ import {Fragment} from "react";
 import {uploadVideo} from "../firebase/functions";
 
 import styles from "./upload.module.css";
-import { handleClientScriptLoad } from "next/script";
 
 export default function Upload(){
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) =>{

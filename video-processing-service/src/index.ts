@@ -1,4 +1,5 @@
 import express from 'express';
+import {isVideoNew, setVideo} from './firestore';
 
 import { 
   uploadProcessedVideo,
@@ -35,11 +36,33 @@ app.post("/process-video", async (req, res) => {
     return;
   }
 
-  const inputFileName = data.name;
+  const inputFileName = data.name;// format of <UID>-<DATE>.<EXTENSION>
   const outputFileName = `processed-${inputFileName}`;
+  const videoId = inputFileName.split('.')[0];
+  if(!isVideoNew(videoId)){
+    res.status(400).send('Bad Request: video already processing or processed');
+    return 
+  }else{
+    await setVideo(videoId, {
+      id: videoId,
+      uid: videoId.split('-')[0],
+      status: "processing"
+    });
+  }
 
   // Download the raw video from Cloud Storage
-  await downloadRawVideo(inputFileName);
+  try {
+    await downloadRawVideo(inputFileName);
+  } catch (error: any) {
+    console.error(`Failed to download raw video ${inputFileName}:`, error);
+    // Check if it's a "not found" error (Google Cloud Storage API returns 404)
+    if (error.code === 404) {
+      res.status(404).send(`Error: Raw video ${inputFileName} not found in bucket.`);
+    } else {
+      res.status(500).send(`Error downloading raw video: ${error.message}`);
+    }
+    return;
+  }
 
   // Process the video into 360p
   try { 
@@ -56,6 +79,10 @@ app.post("/process-video", async (req, res) => {
   // Upload the processed video to Cloud Storage
   await uploadProcessedVideo(outputFileName);
 
+  await setVideo(videoId,{
+    status: "processed",
+    filename: outputFileName
+  })
   await Promise.all([
     deleteRawVideo(inputFileName),
     deleteProcessedVideo(outputFileName)
@@ -68,4 +95,10 @@ app.post("/process-video", async (req, res) => {
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+}).on('error', (err: Error) => {
+    console.error('Server failed to start:', err);
+    process.exit(1); // Exit if server fails to start
 });
+
+console.log(`Attempting to start server on port: ${port}`);
+

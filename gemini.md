@@ -28,6 +28,28 @@ The project is a YouTube clone with a microservices-based architecture composed 
 
 This architecture effectively decouples the user-facing application from the resource-intensive video processing task, which is a scalable and robust design. The use of pre-signed URLs for uploads and separate buckets for raw and processed media are best practices for security and organization.
 
+## Key Features & Configuration
+
+### Dark Mode
+
+A dark mode feature has been implemented in the `yt-web-client`.
+
+*   **Implementation:** The theme is managed globally using a React Context (`app/context/theme.tsx`). The user's preference is stored in `localStorage` to persist across sessions.
+*   **Styling:** The application uses CSS variables for theming, defined in `app/globals.css`. A `.dark` class is applied to the `<html>` element to switch to dark mode colors.
+*   **Logo:** The YouTube logo is swapped based on the theme. The dark mode logo is located at `public/YouTube_2024_(white_text).svg`.
+
+### Firebase Security
+
+Security rules have been implemented and deployed for both Cloud Firestore and Cloud Storage to protect the application's data.
+
+*   **Firestore Rules (`yt-api-service/firestore.rules`):**
+    *   Restricts write access to user-specific data.
+    *   Allows public read access for video metadata, but write access is restricted to the video owner.
+*   **Storage Rules (`yt-api-service/storage.rules`):**
+    *   Restricts uploads to the raw videos bucket to authenticated users only.
+    *   Prevents direct client-side reading or deletion of raw videos.
+    *   Allows public read access for processed videos, but prevents client-side writes or deletions.
+
 ## Services
 
 ### 1. `yt-web-client`
@@ -35,8 +57,9 @@ This architecture effectively decouples the user-facing application from the res
 *   **Description:** A Next.js application that serves as the frontend for the YouTube clone.
 *   **Location:** `/yt-web-client`
 *   **Key Files:**
-    *   `app/page.tsx`: The main landing page of the application. It demonstrates how videos are fetched and displayed to the user.
-    *   `app/firebase/functions.ts`: This file is the bridge between the frontend and the backend. It defines the `Video` data structure and contains the functions for calling the backend Firebase Functions for uploading and fetching videos.
+    *   `app/page.tsx`: The main landing page of the application.
+    *   `app/navbar/navbar.tsx`: The main navigation bar, which includes the dark mode toggle.
+    *   `app/context/theme.tsx`: The React Context for managing the theme.
 *   **How to Run:**
     ```bash
     cd yt-web-client
@@ -51,14 +74,15 @@ This architecture effectively decouples the user-facing application from the res
     ```
     Replace `YOUR_PROJECT_ID` with your actual Google Cloud Project ID.
     The script will build a Docker image, push it to Google Artifact Registry, and deploy it to Cloud Run.
-    If this is the first deployment, you may need to add the Cloud Run service URL to the Firebase Auth authorized domains.
 
 ### 2. `yt-api-service`
 
 *   **Description:** A Firebase Functions project that serves as the backend API for the YouTube clone.
-*   **Location:** `/yt-api-service/functions`
+*   **Location:** `/yt-api-service`
 *   **Key Files:**
-    *   `src/index.ts`: This is the core of the backend API. It defines the callable functions that the frontend uses. `generateUploadUrl` is critical for the upload process, and `getVideos` is the source of data for the homepage.
+    *   `functions/src/index.ts`: The core of the backend API.
+    *   `firestore.rules`: Security rules for the Firestore database.
+    *   `storage.rules`: Security rules for Cloud Storage.
 *   **How to Run:**
     ```bash
     cd yt-api-service/functions
@@ -69,12 +93,12 @@ This architecture effectively decouples the user-facing application from the res
 
 ### 3. `video-processing-service`
 
-*   **Description:** A Node.js service that processes uploaded videos. It listens for new videos in a GCS bucket, processes them, and saves them to another bucket.
+*   **Description:** A Node.js service that processes uploaded videos.
 *   **Location:** `/video-processing-service`
 *   **Key Files:**
-    *   `src/index.ts`: This file contains the main logic for the video processing service. It's an Express server that listens for Pub/Sub messages from Google Cloud Storage and orchestrates the entire video conversion pipeline.
-    *   `src/storage.ts`: This file handles all the low-level interactions with Google Cloud Storage and the `ffmpeg` video conversion process. It shows where files are stored (raw vs. processed buckets) and how they are made public.
-    *   `src/firestore.ts`: This file manages the state of video processing in the Firestore database. The `setVideo` function with `{merge: true}` is key to the state machine (`processing` -> `processed`), and `isVideoNew` prevents race conditions.
+    *   `src/index.ts`: The main logic for the video processing service.
+    *   `src/storage.ts`: Handles interactions with GCS and `ffmpeg`.
+    *   `src/firestore.ts`: Manages the video state in Firestore.
 *   **How to Run:**
     ```bash
     cd video-processing-service

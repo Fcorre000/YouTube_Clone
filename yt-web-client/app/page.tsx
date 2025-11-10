@@ -12,7 +12,7 @@ export default async function Home() {
       {
         videos.map((video) => (
           <Link href={`/watch?v=${video.filename}`} key={video.id}>
-            <Image src={'/thumbnail.png'} alt='video' width={240} height={160}
+            <Image src={video.thumbnailUrl || '/thumbnail.png'} alt='video' width={240} height={160}
               className={styles.thumbnail}/>
           </Link>
         ))

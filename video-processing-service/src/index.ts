@@ -7,7 +7,10 @@ import {
   deleteRawVideo,
   deleteProcessedVideo,
   convertVideo,
-  setupDirectories
+  setupDirectories,
+  generateThumbnail,
+  uploadThumbnail,
+  deleteThumbnail
 } from './storage';
 
 // Create the local directories for videos
@@ -39,6 +42,8 @@ app.post("/process-video", async (req, res) => {
   const inputFileName = data.name;// format of <UID>-<DATE>.<EXTENSION>
   const outputFileName = `processed-${inputFileName}`;
   const videoId = inputFileName.split('.')[0];
+  const thumbnailName = `${videoId}.jpg`;
+
   if(!isVideoNew(videoId)){
     res.status(400).send('Bad Request: video already processing or processed');
     return 
@@ -75,17 +80,37 @@ app.post("/process-video", async (req, res) => {
     res.status(500).send('Processing failed');
     return;
   }
+
+  // Generate a thumbnail from the video
+  try {
+    await generateThumbnail(inputFileName, thumbnailName);
+  } catch (err) {
+    // Cleanup local files
+    await Promise.all([
+      deleteRawVideo(inputFileName),
+      deleteProcessedVideo(outputFileName),
+      deleteThumbnail(thumbnailName)
+    ]);
+    res.status(500).send('Thumbnail generation failed');
+    return;
+  }
   
-  // Upload the processed video to Cloud Storage
-  await uploadProcessedVideo(outputFileName);
+  // Upload the processed video and thumbnail to Cloud Storage
+  await Promise.all([
+    uploadProcessedVideo(outputFileName),
+    uploadThumbnail(thumbnailName)
+  ]);
 
   await setVideo(videoId,{
     status: "processed",
-    filename: outputFileName
+    filename: outputFileName,
+    thumbnailUrl: `https://storage.googleapis.com/fc-yt-thumbnails/${thumbnailName}`
   })
+
   await Promise.all([
     deleteRawVideo(inputFileName),
-    deleteProcessedVideo(outputFileName)
+    deleteProcessedVideo(outputFileName),
+    deleteThumbnail(thumbnailName)
   ]);
 
   res.status(200).send('Processing finished successfully');

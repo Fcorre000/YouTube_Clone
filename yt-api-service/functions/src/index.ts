@@ -19,7 +19,8 @@ export interface Video {
   filename?: string,
   status?: "processing" | "processed",
   title?: string,
-  description?: string
+  description?: string,
+  thumbnailUrl?: string
 }
 
 export const createUser = functions.auth.user().onCreate((user) => {

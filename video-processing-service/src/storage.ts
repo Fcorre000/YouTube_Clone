@@ -7,9 +7,11 @@ const storage = new Storage();
 
 const rawVideoBucketName = "fc-yt-raw-videos";
 const processedVideoBucketName = "fc-yt-processed-videos";
+const thumbnailBucketName = "fc-yt-thumbnails";
 
 const localRawVideoPath = "/tmp/raw-videos";
 const localProcessedVideoPath = "/tmp/processed-videos";
+const localThumbnailPath = "/tmp/thumbnails";
 
 /**
  * Creates the local directories for raw and processed videos.
@@ -17,6 +19,7 @@ const localProcessedVideoPath = "/tmp/processed-videos";
 export function setupDirectories() {
   ensureDirectoryExistence(localRawVideoPath);
   ensureDirectoryExistence(localProcessedVideoPath);
+  ensureDirectoryExistence(localThumbnailPath);
 }
 
 
@@ -38,6 +41,31 @@ export function convertVideo(rawVideoName: string, processedVideoName: string) {
         reject(err);
       })
       .save(`${localProcessedVideoPath}/${processedVideoName}`);
+  });
+}
+
+/**
+ * @param rawVideoName - The name of the raw video file.
+ * @param thumbnailName - The name of the thumbnail file to be generated.
+ * @returns A promise that resolves when the thumbnail has been generated.
+ */
+export function generateThumbnail(rawVideoName: string, thumbnailName: string) {
+  return new Promise<void>((resolve, reject) => {
+    ffmpeg(`${localRawVideoPath}/${rawVideoName}`)
+      .on('end', () => {
+        console.log('Thumbnail generated successfully');
+        resolve();
+      })
+      .on('error', (err) => {
+        console.error('Error generating thumbnail: ' + err.message);
+        reject(err);
+      })
+      .screenshots({
+        count: 1,
+        folder: localThumbnailPath,
+        filename: thumbnailName,
+        timemarks: ['5'], // Take screenshot at 1 second
+      });
   });
 }
 
@@ -69,8 +97,7 @@ export async function uploadProcessedVideo(fileName: string) {
   const bucket = storage.bucket(processedVideoBucketName);
 
   // Upload video to the bucket
-  await storage.bucket(processedVideoBucketName)
-    .upload(`${localProcessedVideoPath}/${fileName}`, {
+  await bucket.upload(`${localProcessedVideoPath}/${fileName}`, {
       destination: fileName,
     });
   console.log(
@@ -78,6 +105,24 @@ export async function uploadProcessedVideo(fileName: string) {
   );
 
   // Set the video to be publicly readable
+  await bucket.file(fileName).makePublic();
+}
+
+/**
+ * @param fileName - The name of the thumbnail file to upload from the
+ * {@link localThumbnailPath} folder into the {@link thumbnailBucketName}.
+ * @returns A promise that resolves when the file has been uploaded.
+ */
+export async function uploadThumbnail(fileName: string) {
+  const bucket = storage.bucket(thumbnailBucketName);
+
+  await bucket.upload(`${localThumbnailPath}/${fileName}`, {
+    destination: fileName,
+  });
+  console.log(
+    `${localThumbnailPath}/${fileName} uploaded to gs://${thumbnailBucketName}/${fileName}.`
+  );
+
   await bucket.file(fileName).makePublic();
 }
 
@@ -101,6 +146,15 @@ export function deleteRawVideo(fileName: string) {
 */
 export function deleteProcessedVideo(fileName: string) {
   return deleteFile(`${localProcessedVideoPath}/${fileName}`);
+}
+
+/**
+ * @param fileName - The name of the file to delete from the
+ * {@link localThumbnailPath} folder.
+ * @returns A promise that resolves when the file has been deleted.
+ */
+export function deleteThumbnail(fileName: string) {
+  return deleteFile(`${localThumbnailPath}/${fileName}`);
 }
 
 

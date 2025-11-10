@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Raw videos bucket: Only authenticated users can upload files that match their UID.
+    // No one can read or delete raw videos through the client.
+    match /fc-yt-raw-videos/{fileName} {
+      allow write: if request.auth != null && fileName.matches(request.auth.uid + '-.*');
+      allow read, delete: if false;
+    }
+
+    // Processed videos bucket: Anyone can read the processed videos.
+    // No one can write or delete processed videos through the client.
+    match /fc-yt-processed-videos/{allPaths=**} {
+      allow read: if true;
+      allow write, delete: if false;
+    }
+  }
+}

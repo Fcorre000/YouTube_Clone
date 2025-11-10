@@ -5,8 +5,6 @@ import * as logger from "firebase-functions/logger";
 import {Storage} from "@google-cloud/storage";
 import {onCall} from "firebase-functions/v2/https";
 
-
-
 initializeApp();
 
 const firestore = new Firestore();
@@ -61,7 +59,8 @@ export const generateUploadUrl = onCall({maxInstances: 1}, async (request) => {
   return {url, fileName};
 });
 
-export const getVideos =onCall({maxInstances: 1}, async () => {
-  const snapshot = await firestore.collection(videoCollectionId).limit(10).get();
+export const getVideos = onCall({maxInstances: 1}, async () => {
+  const snapshot =
+    await firestore.collection(videoCollectionId).limit(10).get();
   return snapshot.docs.map((doc) => doc.data());
 });

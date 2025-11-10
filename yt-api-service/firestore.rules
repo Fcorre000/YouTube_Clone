@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can read their own user document, and create it.
+    match /users/{userId} {
+      allow read, create: if request.auth.uid == userId;
+    }
+
+    // Videos can be read by any authenticated user.
+    // A user can create/update a video document only if the uid matches their own.
+    match /videos/{videoId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      // Note: Deletion is not allowed by default. You can add `allow delete` if needed.
+    }
+  }
+}

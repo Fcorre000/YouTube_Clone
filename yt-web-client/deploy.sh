@@ -23,9 +23,9 @@ echo "--- Starting deployment for project: ${PROJECT_ID} ---"
 # Add --platform linux/amd64 for Mac users.
 echo "--- 1. Building Docker image ---"
 if [[ "$(uname)" == "Darwin" ]]; then
-  docker build --platform linux/amd64 -t ${IMAGE_TAG} .
+  docker build --platform linux/amd64 -t ${IMAGE_TAG} -f yt-web-client/dockerfile yt-web-client
 else
-  docker build -t ${IMAGE_TAG} .
+  docker build -t ${IMAGE_TAG} -f yt-web-client/dockerfile yt-web-client
 fi
 echo "--- Docker image built successfully ---"
 

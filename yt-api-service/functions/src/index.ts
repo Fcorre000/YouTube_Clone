@@ -20,7 +20,8 @@ export interface Video {
   status?: "processing" | "processed",
   title?: string,
   description?: string,
-  thumbnailUrl?: string
+  thumbnailUrl?: string,
+  createdAt?: number
 }
 
 export const createUser = functions.auth.user().onCreate((user) => {
@@ -61,7 +62,11 @@ export const generateUploadUrl = onCall({maxInstances: 1}, async (request) => {
 });
 
 export const getVideos = onCall({maxInstances: 1}, async () => {
-  const snapshot =
-    await firestore.collection(videoCollectionId).limit(10).get();
+  const snapshot = await firestore
+    .collection(videoCollectionId)
+    .where("status", "==", "processed")
+    .orderBy("createdAt", "desc")
+    .limit(12)
+    .get();
   return snapshot.docs.map((doc) => doc.data());
 });

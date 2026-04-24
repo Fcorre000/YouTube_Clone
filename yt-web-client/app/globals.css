@@ -1,34 +1,104 @@
 :root {
-  --background-color: #ffffff;
-  --text-color: #000000;
-  --primary-color: #f0f0f0;
-  --secondary-color: #e0e0e0;
-  --border-color: #cccccc;
-  --link-color: #0070f3;
-  --link-hover-color: #005bb5;
+  /* Cinema · LIGHT (warm off-white film paper) */
+  --bg: #f2ede2;
+  --surface: #fbf7ec;
+  --surface-2: #e9e2d2;
+  --ink: #1a1611;
+  --ink-2: #5b5547;
+  --ink-3: #8d8674;
+  --line: #dcd4c2;
+  --accent: #a8711f;
+  --accent-hover: #8a5a14;
+
+  /* Legacy aliases. Keep until all modules migrate to Cinema tokens. */
+  --background-color: var(--bg);
+  --text-color: var(--ink);
+  --primary-color: var(--surface-2);
+  --secondary-color: var(--line);
+  --border-color: var(--line);
+  --link-color: var(--accent);
+  --link-hover-color: var(--accent-hover);
 }
 
 .dark {
-  --background-color: #1a1a1a;
-  --text-color: #ffffff;
-  --primary-color: #2a2a2a;
-  --secondary-color: #3a3a3a;
-  --border-color: #444444;
-  --link-color: #409cff;
-  --link-hover-color: #69b4ff;
+  /* Cinema · DARK (primary mode) */
+  --bg: #0a0a0b;
+  --surface: #121213;
+  --surface-2: #1c1c1e;
+  --ink: #f4efe4;
+  --ink-2: #a39f92;
+  --ink-3: #5f5c54;
+  --line: #242428;
+  --accent: #e8b24e;
+  --accent-hover: #efc468;
+
+  --background-color: var(--bg);
+  --text-color: var(--ink);
+  --primary-color: var(--surface-2);
+  --secondary-color: var(--line);
+  --border-color: var(--line);
+  --link-color: var(--accent);
+  --link-hover-color: var(--accent-hover);
+}
+
+html, body {
+  background-color: var(--bg);
+  color: var(--ink);
 }
 
 body {
-  background-color: var(--background-color);
-  color: var(--text-color);
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a {
-  color: var(--link-color);
+  color: var(--accent);
   text-decoration: none;
 }
 
 a:hover {
-  color: var(--link-hover-color);
+  color: var(--accent-hover);
+}
+
+/* ---------- Utilities ---------- */
+
+.serif {
+  font-family: var(--font-serif), 'DM Serif Display', serif;
+  font-weight: 400;
+}
+
+.kicker {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--surface-2);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #0a0a0b;
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }

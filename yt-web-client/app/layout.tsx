@@ -1,22 +1,27 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Serif_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./navbar/navbar";
+import DemoBar from "./components/DemoBar";
 import { ThemeProvider } from "./context/theme";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const serif = DM_Serif_Display({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const mono = JetBrains_Mono({
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Youtube",
-  description: "Youtube Clone",
+  title: "Reel · streaming demo",
+  description: "Full-stack YouTube-style streaming demo on Google Cloud.",
 };
 
 export default function RootLayout({
@@ -26,8 +31,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${serif.variable} ${mono.variable}`}>
         <ThemeProvider>
+          <DemoBar />
           <Navbar />
           {children}
         </ThemeProvider>

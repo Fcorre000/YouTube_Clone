@@ -1,3 +1,364 @@
-.thumbnail {
-    margin: 10px;
+.page {
+  padding: 40px 48px 0;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ---------- Block A: Intro row ---------- */
+.intro {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 48px;
+  padding: 8px 0 40px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 40px;
+}
+
+.kicker {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kickerDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.h1 {
+  font-family: var(--font-serif), 'DM Serif Display', serif;
+  font-size: clamp(44px, 6vw, 78px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.h1Em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.lede {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  max-width: 580px;
+  margin: 0 0 24px;
+  letter-spacing: 0;
+}
+
+.lede b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.chip {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+}
+
+.chip b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.pipeline {
+  border: 1px solid var(--line);
+  padding: 20px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pipelineHead {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 4px;
+  font-weight: 500;
+}
+
+.flow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flowRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: baseline;
+  font-size: 12px;
+}
+
+.flowStep {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.flowName {
+  color: var(--ink);
+}
+
+.flowSvc {
+  color: var(--ink-3);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+/* ---------- Block B: Feature card ---------- */
+.feature {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  display: block;
+  margin-bottom: 48px;
+  cursor: pointer;
+  background: #000;
+  text-decoration: none;
+  color: inherit;
+}
+
+.featureThumb {
+  position: absolute;
+  inset: 0;
+}
+
+.featureThumbImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.8);
+}
+
+.feature::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.85) 100%);
+  pointer-events: none;
+}
+
+.featureContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  padding: 32px 40px;
+  color: #fff;
+  max-width: 720px;
+}
+
+.featureTag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--accent);
+  color: #0a0a0b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.featureTitle {
+  font-family: var(--font-serif), 'DM Serif Display', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0 0 12px;
+  font-weight: 400;
+  color: #fff;
+}
+
+.featureMeta {
+  display: flex;
+  gap: 20px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.featurePlay {
+  position: absolute;
+  top: 32px;
+  right: 40px;
+  z-index: 1;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(10, 10, 11, 0.6);
+  border: 1px solid rgba(232, 178, 78, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  backdrop-filter: blur(8px);
+}
+
+/* ---------- Block C: Section head + grid ---------- */
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 8px 0 24px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-family: var(--font-serif), 'DM Serif Display', serif;
+  font-size: 26px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--ink);
+}
+
+.sectionKicker {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px 20px;
+  padding-bottom: 56px;
+}
+
+.card {
+  cursor: pointer;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.thumbWrap {
+  position: relative;
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  background: #000;
+  border-radius: 2px;
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.85) contrast(1.05);
+  transition: transform 0.4s ease;
+}
+
+.card:hover .thumbImg {
+  transform: scale(1.04);
+}
+
+.thumbWrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+
+.thumbOverlay {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  z-index: 1;
+}
+
+.cardTitle {
+  font-family: var(--font-serif), 'DM Serif Display', serif;
+  font-size: 19px;
+  line-height: 1.15;
+  letter-spacing: -0.005em;
+  margin: 14px 0 6px;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.byline {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+}
+
+.bylineSep {
+  color: var(--ink-3);
+  margin: 0 6px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  .intro {
+    grid-template-columns: 1fr;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 24px 20px 0;
+  }
+  .feature {
+    height: 320px;
+  }
+  .featureContent {
+    padding: 24px 20px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

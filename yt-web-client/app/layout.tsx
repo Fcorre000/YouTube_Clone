@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Serif_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./navbar/navbar";
@@ -22,6 +22,13 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Reel · streaming demo",
   description: "Full-stack YouTube-style streaming demo on Google Cloud.",
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f2ede2" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0b" },
+  ],
 };
 
 export default function RootLayout({
